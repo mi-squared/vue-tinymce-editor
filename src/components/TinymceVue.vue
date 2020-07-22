@@ -98,7 +98,7 @@
         },
         watch: {
             value : function (newValue){
-                console.log('setting new value')
+                // console.log('setting new value:' + newValue)
                 if(!this.isTyping){
                     if(this.editor !== null) {
                       // console.log('editor not null')
@@ -132,7 +132,8 @@
                     plugins: this.plugins,
                     init_instance_callback : this.initEditor,
 		                save_onsavecallback: (event) => {
-                      this.$emit('on-save')
+                      // console.log('saving with content: ' + this.editor.getContent())
+                      this.$emit('on-save', this.editor.getContent())
                     }
                 };
                 tinymce.init(this.concatAssciativeArrays(options, this.other_options));
