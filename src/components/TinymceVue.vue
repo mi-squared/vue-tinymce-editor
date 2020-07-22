@@ -124,7 +124,9 @@
                     plugins: this.plugins,
                     init_instance_callback : this.initEditor,
 		    save_onsavecallback: (event) => {
-                      this.$emit('on-save')
+                      this.$emit('on-save').then(newContent => {
+                        this.content = newContent
+                      })
                     }
                 };
                 tinymce.init(this.concatAssciativeArrays(options, this.other_options));
