@@ -55,19 +55,19 @@
     import 'tinymce/plugins/textcolor';
     import 'tinymce/plugins/toc';
     import 'tinymce/plugins/visualchars';
-    
+
     import 'tinymce/skins/lightgray/skin.min.css'
-   
+
     export default {
         name: 'tinymce',
-        props: { 
+        props: {
                 id : {
                     type : String,
                     required : true
                 },
                 htmlClass : { default : '', type : String},
                 value : { default : '' },
-                plugins : { default : function(){ 
+                plugins : { default : function(){
                                     return [
                                         'advlist autolink lists link image charmap print preview hr anchor pagebreak',
                                         'searchreplace wordcount visualblocks visualchars code fullscreen',
@@ -83,27 +83,30 @@
         },
         data(){
             return {
-                content : '',
                 editor : null,
                 cTinyMce : null,
                 checkerTimeout: null,
                 isTyping : false
-            }; 
+            };
         },
         mounted(){
-            this.content = this.value;
-            this.init();  
+            // this.content = this.value;
+            this.init();
         },
         beforeDestroy () {
             this.editor.destroy();
         },
         watch: {
             value : function (newValue){
+                console.log('setting new value')
                 if(!this.isTyping){
-                    if(this.editor !== null)
-                        this.editor.setContent(newValue);
-                    else
-                        this.content = newValue;
+                    if(this.editor !== null) {
+                      // console.log('editor not null')
+                      this.editor.setContent(newValue);
+                    } else {
+                      console.log('editor IS NULL')
+                      // this.content = newValue;
+                    }
                 }
             },
             readonly(value){
@@ -112,6 +115,11 @@
                 } else {
                     this.editor.setMode('design');
                 }
+            }
+        },
+        computed: {
+            content () {
+              return this.value
             }
         },
         methods: {
@@ -123,10 +131,8 @@
                     toolbar2: this.toolbar2,
                     plugins: this.plugins,
                     init_instance_callback : this.initEditor,
-		    save_onsavecallback: (event) => {
-                      this.$emit('on-save').then(newContent => {
-                        this.content = newContent
-                      })
+		                save_onsavecallback: (event) => {
+                      this.$emit('on-save')
                     }
                 };
                 tinymce.init(this.concatAssciativeArrays(options, this.other_options));
